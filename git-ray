@@ -38,9 +38,12 @@ elsif ($arg eq $commands[1]) {
 	system "git checkout $topicBranch";
 }
 elsif ($arg eq $commands[2]) {
+	system "git checkout master";
 	#probably don't need this line, but just incase it's not set.
 	system "git remote add origin $remoteRepo";
+	system "git merge $remoteRepo";
 	system "git push origin $currentBranch";
+	system "git checkout $remoteRepo";
 }
 elsif ($arg eq $commands[3]) {
 	#update
