@@ -1,0 +1,42 @@
+#!/bin/perl
+#Commands for using git ray.
+@commands = qw(clone start-topic publish);
+
+#User arguments
+$arg = $ARGV[0];
+#The current branch that the user is on
+#$currentBranch = qx(git rev-parse --abbrev-ref HEAD);
+
+
+if ($arg eq $commands[0]) {
+	print "clone";
+}
+elsif ($arg eq $commands[1]) {
+	#Create a branch
+	print "Name of topic branch:\n";
+	$topicBranch = <STDIN>;
+	
+	chomp $topicBranch;
+	
+	if ($topicBranch eq "") {
+		print "Unable to parse branch name. Exiting.\n";
+		exit 0;
+	}
+	
+	print "Topic branch $topicBranch created.\n";
+	system "git branch $topicBranch";
+	system "git checkout $topicBranch";
+}
+elsif ($arg eq $commands[2]) {
+	print "clone";
+}
+elsif ($arg eq "-h") {
+	$cmdSize = scalar(@commands);
+	print "Only the following commands are valid:\n";
+	for ($i = 0; $i < $cmdSize; $i++) {
+		print "  -$commands[$i]\n";
+	}
+}
+else {
+	print "Invalid command. Use git ray -h to get a list of commands.\n";
+}
