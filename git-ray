@@ -1,15 +1,25 @@
 #!/bin/perl
 #Commands for using git ray.
-@commands = qw(clone start-topic publish);
+@commands = qw(clone start-topic publish update);
 
 #User arguments
 $arg = $ARGV[0];
 #The current branch that the user is on
-#$currentBranch = qx(git rev-parse --abbrev-ref HEAD);
+$currentBranch = qx(git rev-parse --abbrev-ref HEAD);
+$remoteRepo = "https://github.com/Sparkiez/Test.git";
 
 
 if ($arg eq $commands[0]) {
-	print "clone";
+	$repo = $ARGV[1];
+	
+	if ($repo eq "") {
+		print "Invalid number of arguments. Please try again with git ray clone <repo.git>.\n";
+		exit 0;
+	}
+	
+	system "git clone $repo";
+	system "git remote add upstream $repo";
+	system "git fetch upstream";
 }
 elsif ($arg eq $commands[1]) {
 	#Create a branch
@@ -28,7 +38,12 @@ elsif ($arg eq $commands[1]) {
 	system "git checkout $topicBranch";
 }
 elsif ($arg eq $commands[2]) {
-	print "clone";
+	#probably don't need this line, but just incase it's not set.
+	system "git remote add origin $remoteRepo";
+	system "git push origin $currentBranch";
+}
+elsif ($arg eq $commands[3]) {
+	#update
 }
 elsif ($arg eq "-h") {
 	$cmdSize = scalar(@commands);
