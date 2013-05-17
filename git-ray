@@ -9,7 +9,16 @@ $arg = $ARGV[0];
 
 
 if ($arg eq $commands[0]) {
-	print "clone";
+	$repo = $ARGV[1];
+	
+	if ($repo eq "") {
+		print "Invalid number of arguments. Please try again with git ray clone <repo.git>.\n";
+		exit 0;
+	}
+	
+	system "git clone $repo";
+	system "git remote add upstream $repo";
+	system "git fetch upstream";
 }
 elsif ($arg eq $commands[1]) {
 	#Create a branch
