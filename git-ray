@@ -1,16 +1,23 @@
 #!/bin/perl
-#Commands for using git ray.
-@commands = qw(clone start-topic publish update);
-
-#User arguments
-$arg = $ARGV[0];
 #The current branch that the user is on
-$currentBranch = qx(git rev-parse --abbrev-ref HEAD);
-$remoteRepo = "https://github.com/Sparkiez/Test.git";
+my $currentBranch = qx(git rev-parse --abbrev-ref HEAD);
 
+#The remote repo to push changes to and update from.
+my $remoteRepo = "https://github.com/Sparkiez/Test.git";
+
+#Commands for using git ray.
+my @commands = qw(clone start-topic publish update);
+
+#User arguments - Accepting first argument only.
+my $arg = $ARGV[0];
 
 if ($arg eq $commands[0]) {
-	$repo = $ARGV[1];
+	####Cloning a remote Repo###########
+	# Copy from remote repo,
+	# set the tracking to the remote repo,
+	# then fetch any changes from remote repo.
+	
+	my $repo = $ARGV[1];
 	
 	if ($repo eq "") {
 		print "Invalid number of arguments. Please try again with git ray clone <repo.git>.\n";
@@ -22,9 +29,12 @@ if ($arg eq $commands[0]) {
 	system "git fetch upstream";
 }
 elsif ($arg eq $commands[1]) {
-	#Create a branch
+	####Starting a topic branch#########
+	# Create a topic branch, then switch
+	# to the new branch.
+	
 	print "Name of topic branch:\n";
-	$topicBranch = <STDIN>;
+	my $topicBranch = <STDIN>;
 	
 	chomp $topicBranch;
 	
@@ -38,6 +48,12 @@ elsif ($arg eq $commands[1]) {
 	system "git checkout $topicBranch";
 }
 elsif ($arg eq $commands[2]) {
+	####Pushing to remote repo##########
+	# This code involve switching to master,
+	# merge the change to master, push master
+	# change to repo, and switching back to the
+	# original topic branch.
+	
 	print "Checking out master.\n";
 	exit 0 if system "git checkout master";
 	
@@ -46,17 +62,20 @@ elsif ($arg eq $commands[2]) {
 	
 	print "Merging $remoteRepo into master.\n";
 	system "git merge $currentBranch";
-	
 	print "Pushing out master.\n";
 	system "git push origin master";
-	
 	print "Checking out $currentBranch.\n";
 	system "git checkout $currentBranch";
 }
 elsif ($arg eq $commands[3]) {
+	####Updating current branch#########
 	print "Update.\n";
 }
 elsif ($arg eq "-h") {
+	####Help Command - List all cmds####
+	# Print out a list of commands usable
+	# by this git script.
+	
 	$cmdSize = scalar(@commands);
 	print "Only the following commands are valid:\n";
 	for ($i = 0; $i < $cmdSize; $i++) {
