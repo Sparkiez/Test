@@ -1,11 +1,12 @@
 #!/bin/perl
 #Commands for using git ray.
-@commands = qw(clone start-topic publish);
+@commands = qw(clone start-topic publish update);
 
 #User arguments
 $arg = $ARGV[0];
 #The current branch that the user is on
-#$currentBranch = qx(git rev-parse --abbrev-ref HEAD);
+$currentBranch = qx(git rev-parse --abbrev-ref HEAD);
+$remoteRepo = "https://github.com/Sparkiez/Test.git";
 
 
 if ($arg eq $commands[0]) {
@@ -37,7 +38,23 @@ elsif ($arg eq $commands[1]) {
 	system "git checkout $topicBranch";
 }
 elsif ($arg eq $commands[2]) {
-	print "clone";
+	print "Checking out master.\n";
+	exit 0 if system "git checkout master";
+	
+	#probably don't need this line, but just incase it's not set.
+	system "git remote add origin $remoteRepo";
+	
+	print "Merging $remoteRepo into master.\n";
+	system "git merge $currentBranch";
+	
+	print "Pushing out master.\n";
+	system "git push origin master";
+	
+	print "Checking out $currentBranch.\n";
+	system "git checkout $currentBranch";
+}
+elsif ($arg eq $commands[3]) {
+	print "Update.\n";
 }
 elsif ($arg eq "-h") {
 	$cmdSize = scalar(@commands);
