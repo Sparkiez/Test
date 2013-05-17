@@ -39,7 +39,7 @@ elsif ($arg eq $commands[1]) {
 }
 elsif ($arg eq $commands[2]) {
 	print "Checking out master.\n";
-	system "git checkout master";
+	exit 0 if system "git checkout master";
 	
 	#probably don't need this line, but just incase it's not set.
 	system "git remote add origin $remoteRepo";
@@ -54,7 +54,7 @@ elsif ($arg eq $commands[2]) {
 	system "git checkout $currentBranch";
 }
 elsif ($arg eq $commands[3]) {
-	#update
+	print "Update.\n";
 }
 elsif ($arg eq "-h") {
 	$cmdSize = scalar(@commands);
