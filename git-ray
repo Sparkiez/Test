@@ -62,8 +62,10 @@ elsif ($arg eq $commands[2]) {
 	print "Checking out master.\n";
 	exit 0 if system "git checkout master";
 	
-	#probably don't need this line, but just incase it's not set.
-	system "git remote add origin $remoteRepo";
+	# probably don't need this line, but just incase it's not set.
+	# This should really be the repo being cloned. But since I am using
+	# only 1 repo, I just have it set as a static text.
+	#system "git remote add origin $remoteRepo";
 	
 	print "Merging $remoteRepo into master.\n";
 	system "git merge $currentBranch";
