@@ -3,7 +3,7 @@
 my $currentBranch = qx(git rev-parse --abbrev-ref HEAD);
 
 #The remote repo to push changes to and update from.
-my $remoteRepo = "https://github.com/Sparkiez/Test.git";
+my $remoteRepo = qx(git config --get remote.origin.url);
 
 #Commands for using git ray.
 my @commands = qw(clone start-topic publish update);
