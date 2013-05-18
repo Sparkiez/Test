@@ -45,6 +45,11 @@ elsif ($arg eq $commands[1]) {
 	
 	print "Topic branch $topicBranch created.\n";
 	system "git branch $topicBranch";
+	
+	# Incase it is not tracking the remote master branch,
+	# we will need to track it so that it know where to rebase from.
+	system "git branch --set-upstream-to=remotes/origin/master $topicBranch";
+	
 	system "git checkout $topicBranch";
 }
 elsif ($arg eq $commands[2]) {
@@ -69,7 +74,7 @@ elsif ($arg eq $commands[2]) {
 }
 elsif ($arg eq $commands[3]) {
 	####Updating current branch#########
-	print "Update.\n";
+	print "Command not supported. Use git pull --rebase instead.\n";
 }
 elsif ($arg eq "-h") {
 	####Help Command - List all cmds####
