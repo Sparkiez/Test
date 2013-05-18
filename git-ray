@@ -1,10 +1,4 @@
 #!/bin/perl
-#The current branch that the user is on
-my $currentBranch = qx(git rev-parse --abbrev-ref HEAD);
-
-#The remote repo to push changes to and update from.
-my $remoteRepo = qx(git config --get remote.origin.url);
-
 #Commands for using git ray.
 my @commands = qw(clone start-topic publish update);
 
@@ -25,70 +19,82 @@ if ($arg eq $commands[0]) {
 	}
 	
 	system "git clone $repo";
-	system "git remote add upstream $repo";
-	system "git fetch upstream";
-}
-elsif ($arg eq $commands[1]) {
-	####Starting a topic branch#########
-	# Create a topic branch, then switch
-	# to the new branch.
 	
-	print "Name of topic branch:\n";
-	my $topicBranch = <STDIN>;
-	
-	chomp $topicBranch;
-	
-	if ($topicBranch eq "") {
-		print "Unable to parse branch name. Exiting.\n";
-		exit 0;
-	}
-	
-	print "Topic branch $topicBranch created.\n";
-	system "git branch $topicBranch";
-	
-	# Incase it is not tracking the remote master branch,
-	# we will need to track it so that it know where to rebase from.
-	system "git branch --set-upstream-to=remotes/origin/master $topicBranch";
-	
-	system "git checkout $topicBranch";
-}
-elsif ($arg eq $commands[2]) {
-	####Pushing to remote repo##########
-	# This code involve switching to master,
-	# merge the change to master, push master
-	# change to repo, and switching back to the
-	# original topic branch.
-	
-	print "Checking out master.\n";
-	exit 0 if system "git checkout master";
-	
-	# probably don't need this line, but just incase it's not set.
-	# This should really be the repo being cloned. But since I am using
-	# only 1 repo, I just have it set as a static text.
-	#system "git remote add origin $remoteRepo";
-	
-	print "Merging $remoteRepo into master.\n";
-	system "git merge $currentBranch";
-	print "Pushing out master.\n";
-	system "git push origin master";
-	print "Checking out $currentBranch.\n";
-	system "git checkout $currentBranch";
-}
-elsif ($arg eq $commands[3]) {
-	####Updating current branch#########
-	print "Command not supported. Use git pull --rebase instead.\n";
-}
-elsif ($arg eq "-h") {
-	####Help Command - List all cmds####
-	# Print out a list of commands usable
-	# by this git script.
-	
-	$cmdSize = scalar(@commands);
-	print "Only the following commands are valid:\n";
-	for ($i = 0; $i < $cmdSize; $i++) {
-		print "  -$commands[$i]\n";
-	}
+	# This code is only for tracking another person's repo.
+	# For more information go to: https://help.github.com/articles/fork-a-repo
+	#system "git remote add upstream <someoneElse'sRepo.git>";
+	#Fetch the changes from the remote repo.
+	#system "git fetch upstream";
 }
 else {
-	print "Invalid command. Use git ray -h to get a list of commands.\n";
+	#The current branch that the user is on
+	my $currentBranch = qx(git rev-parse --abbrev-ref HEAD);
+
+	#The remote repo to push changes to and update from.
+	my $remoteRepo = qx(git config --get remote.origin.url);
+
+	if ($arg eq $commands[1]) {
+		####Starting a topic branch#########
+		# Create a topic branch, then switch
+		# to the new branch.
+		
+		print "Name of topic branch:\n";
+		my $topicBranch = <STDIN>;
+		
+		chomp $topicBranch;
+		
+		if ($topicBranch eq "") {
+			print "Unable to parse branch name. Exiting.\n";
+			exit 0;
+		}
+		
+		print "Topic branch $topicBranch created.\n";
+		system "git branch $topicBranch";
+		
+		# Incase it is not tracking the remote master branch,
+		# we will need to track it so that it know where to rebase from.
+		system "git branch --set-upstream-to=remotes/origin/master $topicBranch";
+		
+		system "git checkout $topicBranch";
+	}
+	elsif ($arg eq $commands[2]) {
+		####Pushing to remote repo##########
+		# This code involve switching to master,
+		# merge the change to master, push master
+		# change to repo, and switching back to the
+		# original topic branch.
+		
+		print "Checking out master.\n";
+		exit 0 if system "git checkout master";
+		
+		# probably don't need this line, but just incase it's not set.
+		# This should really be the repo being cloned. But since I am using
+		# only 1 repo, I just have it set as a static text.
+		#system "git remote add origin $remoteRepo";
+		
+		print "Merging $remoteRepo into master.\n";
+		system "git merge $currentBranch";
+		print "Pushing out master.\n";
+		system "git push origin master";
+		print "Checking out $currentBranch.\n";
+		system "git checkout $currentBranch";
+	}
+	elsif ($arg eq $commands[3]) {
+		####Updating current branch#########
+		print "Command not supported. Use git pull --rebase instead.\n";
+	}
+	elsif ($arg eq "-h") {
+		####Help Command - List all cmds####
+		# Print out a list of commands usable
+		# by this git script.
+		
+		$cmdSize = scalar(@commands);
+		print "Only the following commands are valid:\n";
+		for ($i = 0; $i < $cmdSize; $i++) {
+			print "  -$commands[$i]\n";
+		}
+	}
+	else {
+		print "Invalid command. Use git ray -h to get a list of commands.\n";
+	}
 }
